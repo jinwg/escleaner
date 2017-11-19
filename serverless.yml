@@ -1,0 +1,40 @@
+service: es-cleaner 
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+
+provider:
+  name: aws
+  runtime: python2.7
+  stage: ${opt:name}
+  cfLogs: true
+  region: ${opt:region}
+  stackTags:
+    application: elasticsearch-index-cleaner
+    environment: prod
+    es_domain_name: ${opt:name}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "es:*"
+      Resource:
+        - "arn:aws:es:*"
+  environment:
+    DOMAIN_NAME: ${opt:name}
+    INDEX_REGEX: "(logstash|cwl)-(?P<y>\\d+)\\.(?P<m>\\d+)\\.(?P<d>\\d+)"
+    DAYS_TO_SAVE: 14
+functions:
+  ESCleaner:
+    handler: escleaner.lambda_handler
+    name: es-cleaner-${opt:name}
+    memorySize: 128
+    timeout: 300
+    description: ES index remover for ${opt:name}
+    events:
+      - schedule:
+          rate: cron(35 01 * * ? *)
+
