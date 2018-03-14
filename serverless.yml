@@ -13,9 +13,9 @@ provider:
   stage: ${opt:name}
   cfLogs: true
   region: ${opt:region}
+  deploymentBucket: ${opt:region}-reuters-serverless-artifactory
   stackTags:
     application: elasticsearch-index-cleaner
-    environment: prod
     es_domain_name: ${opt:name}
   iamRoleStatements:
     - Effect: Allow
