@@ -2,14 +2,13 @@ service: es-cleaner
 
 plugins:
   - serverless-python-requirements
-
 custom:
   pythonRequirements:
     dockerizePip: true
 
 provider:
   name: aws
-  runtime: python2.7
+  runtime: python3.6
   stage: ${opt:name}
   cfLogs: true
   region: ${opt:region}
